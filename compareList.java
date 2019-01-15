@@ -34,97 +34,107 @@ public class compareList {
 //        
 //        return zero;
 //    }
-    public static void main(String[] args) throws FileNotFoundException, IOException {
+    public static Map createMap(String filename) throws FileNotFoundException, IOException{
+        String currentDirectory = System.getProperty("user.dir");
+        String fullFileName = currentDirectory + filename;
+        FileReader fakeFileReader = new FileReader(fullFileName);
+        BufferedReader fakeBufferedReader = new BufferedReader(fakeFileReader);
         
+        StringTokenizer stf;
+        String sf;
+        sf = fakeBufferedReader.readLine();
         
-    //for fake 
-    String currentDirectory = System.getProperty("user.dir");
-    String fullFileName = currentDirectory + "/fake common 90 words.txt";
-    
-    FileReader fakeFileReader = new FileReader(fullFileName);
-    BufferedReader fakeBufferedReader = new BufferedReader(fakeFileReader);
-    //for real
-    String currentDirectory1 = System.getProperty("user.dir");
-    String fullFileName1 = currentDirectory1 + "/real common 90 words.txt";
-    
-    FileReader realFileReader = new FileReader(fullFileName1);
-    BufferedReader realBufferedReader = new BufferedReader(realFileReader);
-    
-    // input file name goes above
-    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("comparedLists.txt")));
-    //for fake
-    StringTokenizer stf;
-    String sf;
-    sf = fakeBufferedReader.readLine();
-    //initialize fake
-    ArrayList <Integer> countFake = new ArrayList();
-    ArrayList <String> wordFake = new ArrayList();
-    //initialize real
-    ArrayList <Integer> countReal = new ArrayList();
-    ArrayList <String> wordReal = new ArrayList();
-    //adding data to arraylists
-    while ( sf!=null && sf.length() > 0){
+        ArrayList <Integer> countFake = new ArrayList();
+        ArrayList <String> wordFake = new ArrayList();
+        
+        while ( sf!=null && sf.length() > 0){
         stf = new StringTokenizer(sf);
         countFake.add(Integer.parseInt(stf.nextToken())); //first integer
         wordFake.add(stf.nextToken()); //second word
         sf = fakeBufferedReader.readLine();
+        }
+        
+        Map <String, Integer> mapFakeWords = new HashMap<>();
+        for (int k = 0; k < countFake.size(); k++){
+        mapFakeWords.put(wordFake.get(k), countFake.get(k));
+        }
+        fakeBufferedReader.close();
+        fakeFileReader.close();
+        return(mapFakeWords);
+        
+        
     }
     
-    StringTokenizer str;
-    String sr;
-    sr = realBufferedReader.readLine();
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+    String currentDirectory = System.getProperty("user.dir");
+    String fullFileName = currentDirectory + "/397common90 stemmed.txt";    
+    FileReader wordFileReader = new FileReader(fullFileName);
+    BufferedReader wordBufferedReader = new BufferedReader(wordFileReader); 
     
-    while ( sr!=null && sr.length() > 0){
-    str = new StringTokenizer(sr);
-    countReal.add(Integer.parseInt(str.nextToken())); //first integer
-    wordReal.add(str.nextToken()); //second word
-    sr = realBufferedReader.readLine();
+    StringTokenizer st;
+    String s = wordBufferedReader.readLine();
+    ArrayList <String> word = new ArrayList();
+
+    while ( s!=null && s.length() > 0){
+    st = new StringTokenizer(s);
+    word.add(st.nextToken()); //second word
+    s = wordBufferedReader.readLine();
     }
+
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("fake vs real news comparing frequency of words.txt")));
     
     //maps for fake words
      Map <String, Integer> mapFakeWords = new HashMap<>();
-    for (int k = 0; k < countFake.size(); k++){
-        mapFakeWords.put(wordFake.get(k), countFake.get(k));
-    }
-    
+     mapFakeWords = createMap("/fake common 90 words.txt"); 
     //maps for real words
     Map <String, Integer> mapRealWords = new HashMap<>();
-    for (int k = 0; k < countReal.size(); k++){
-        mapRealWords.put(wordReal.get(k), countReal.get(k));
+    mapRealWords = createMap("/real common 90 words.txt");
+
+    //which word appears more often in the 397 most commonly shared words
+    for (int k = 0; k < word.size(); k++){
+        if (mapFakeWords.containsKey(word.get(k))&& mapRealWords.containsKey(word.get(k))){
+            if (mapFakeWords.get(word.get(k))> mapRealWords.get(word.get(k))){
+                out.println("0");
+            }else if (mapFakeWords.get(word.get(k)) < mapRealWords.get(word.get(k))){
+                out.println("1");
+            }else{
+                out.println("0.5");
+            }
+        }else if (mapFakeWords.containsKey(word.get(k)) && mapRealWords.containsKey(word.get(k)) == false){
+            out.println("0");
+        }else if(mapFakeWords.containsKey(word.get(k)) == false && mapRealWords.containsKey(word.get(k))){
+            out.println("1");
+        }else{
+            out.println("DNEeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeefjakl;fjl0130-18jdkalfkl;0");
+        }
     }
     
-//    for (int k = 0; k < mapRealWords.size(); k++){
-//        for(int j = 0; j < mapFakeWords.size(); j++){
-//            if(mapFakeWords.containsKey(wordReal.get(k))){
-//                out.print(wordReal.get(k));
-//                out.println(mapFakeWords.get(wordReal.get(k))-mapRealWords.get(wordReal.get(k)));
-//            }else{
-//                out.print(wordReal.get(k));
-//                out.println();
-//            }
+    
+    //finding differences, with 0 as placeholder
+//    Map <String, Integer> combined = new HashMap<>();
+//    combined.putAll(mapRealWords);
+//    combined.putAll(mapFakeWords);
+//    
+//    for(String name: combined.keySet()){
+//        if(mapRealWords.containsKey(name)==false){
+//            mapRealWords.put(name, 0);
 //        }
 //    }
-    Map <String, Integer> combined = new HashMap<>();
-    combined.putAll(mapRealWords);
-    combined.putAll(mapFakeWords);
+//    
+//    for(String name: combined.keySet()){
+//        if(mapFakeWords.containsKey(name)==false){
+//            mapFakeWords.put(name, 0);
+//        }
+//    }
+//    
+//    for(String name: combined.keySet()){
+//        end.put(name, mapRealWords.get(name) - mapFakeWords.get(name));
+//    }   
+
+//for finding the differences between the two maps
+/* 
     Map <String, Integer> end = new HashMap<>();
-    for(String name: combined.keySet()){
-        if(mapRealWords.containsKey(name)==false){
-            mapRealWords.put(name, 0);
-        }
-    }
-    
-    for(String name: combined.keySet()){
-        if(mapFakeWords.containsKey(name)==false){
-            mapFakeWords.put(name, 0);
-        }
-    }
-    
-    for(String name: combined.keySet()){
-        end.put(name, mapRealWords.get(name) - mapFakeWords.get(name));
-    }   
-    
-    
+    end = mapDifference(mapFakeWords, mapRealWords);
     
     for (String name: end.keySet()){
             String key =name;
@@ -132,14 +142,8 @@ public class compareList {
             System.out.println(key + " " + value);
             out.println(key + " " + value);
     }
+*/
     
-    System.out.println(countFake);
-    System.out.println(wordFake);
-    
-    fakeBufferedReader.close();
-    fakeFileReader.close();    
-    realBufferedReader.close();
-    realFileReader.close();
     out.close();                                  
     }
     

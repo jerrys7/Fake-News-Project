@@ -1,12 +1,11 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
  
-public class URLReader extends ReadAndWrite{
+public class URLReader {
     
 	public static void main(String[] args) throws Exception {
  
@@ -26,7 +25,7 @@ public class URLReader extends ReadAndWrite{
             }
             br.close();
             String d ="Settings Cancel Set Have an existing account? Already have a subscription? Don't have an account? Get the news Let friends in your social network know what you are reading about"; 
-            String f = "Story Continued Below";
+              String f = "Story Continued Below";
             String e = "RIGHT WING TRIBUNE –";
             String g = "RIGHT WING TRIBUNE–";
             String a = "AMERICA’S FREEDOM FIGHTERS –";
