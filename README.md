@@ -1,4 +1,4 @@
-# Fake-News-Project
+# FakeNewsProject
 Mostly look at URL Reader and Matrice 
 
 URL Reader does all of the text scrapping 
